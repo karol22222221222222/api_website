@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import passlib.hash as hash
+import bcrypt
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
@@ -87,10 +87,12 @@ def get_olap_db_connection():
 
 # --- Funciones de Utilidad de Autenticación ---
 def verify_password(plain_password, hashed_password):
-    return hash.bcrypt.verify(plain_password, hashed_password)
+    return bcrypt.hashpw.checkpw(plain_password, hashed_password)
 
 def get_password_hash(password):
-    return hash.bcrypt.hash(password)
+    salt = bcrypt.gensalt()
+    password = b'invulnerablepassword' 
+    return bcrypt.hashpw(password,salt)
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()

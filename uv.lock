@@ -231,6 +231,7 @@ name = "inventario-api"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "bcrypt" },
     { name = "fastapi" },
     { name = "passlib", extra = ["bcrypt"] },
     { name = "psycopg2-binary" },
@@ -242,6 +243,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "bcrypt" },
     { name = "fastapi" },
     { name = "passlib", extras = ["bcrypt"] },
     { name = "psycopg2-binary" },
