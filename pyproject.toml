@@ -1,0 +1,21 @@
+[project]
+name = "inventario-api"
+version = "0.1.0"
+description = "API de inventario con FastAPI, PostgreSQL y autenticación JWT."
+authors = [
+    { name = "Tu Nombre" }
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "python-dotenv",
+    "psycopg2-binary",
+    "passlib[bcrypt]",
+    "python-jose",
+    "pydantic",
+]
+
+[tool.uv]
+# uv creará y gestionará el entorno automáticamente
