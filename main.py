@@ -30,9 +30,9 @@ app.add_middleware(
 )
 
 # --- Variables de Entorno y Secretos ---
-SECRET_KEY = os.getenv("SECRET_KEY", "a_very_secret_key_for_development")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 # --- Modelos de Datos (Pydantic) ---
 class UserCreate(BaseModel):
@@ -67,32 +67,35 @@ class ProductUpdate(BaseModel):
 # --- Conexión a la Base de Datos ---
 def get_oltp_db_connection():
     conn = psycopg2.connect(
-        dbname="oltp",
-        user="superu",
-        password="password_oltp",
-        host="localhost",
-        port="5434"
+        dbname=os.getenv("DB_NAME_OLTP"),
+        user=os.getenv("DB_USER_OLTP"),
+        password=os.getenv("DB_PASSWORD_OLTP"),
+        host=os.getenv("DB_HOST_OLTP"),
+        port=os.getenv("DB_PORT_OLTP")
     )
     return conn
 
 def get_olap_db_connection():
     conn = psycopg2.connect(
-        dbname="olap",
-        user="superu",
-        password="password_olap",
-        host="localhost",
-        port="5433"
+        dbname=os.getenv("DB_NAME_OLAP"),
+        user=os.getenv("DB_USER_OLAP"),
+        password=os.getenv("DB_PASSWORD_OLAP"),
+        host=os.getenv("DB_HOST_OLAP"),
+        port=os.getenv("DB_PORT_OLAP")
     )
     return conn
 
 # --- Funciones de Utilidad de Autenticación ---
 def verify_password(plain_password, hashed_password):
-    return bcrypt.hashpw.checkpw(plain_password, hashed_password)
+    """Verifica una contraseña plana contra un hash."""
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def get_password_hash(password):
+    """Genera un hash para una contraseña."""
     salt = bcrypt.gensalt()
-    password = b'invulnerablepassword' 
-    return bcrypt.hashpw(password,salt)
+    password_bytes = password.encode('utf-8')
+    hashed_bytes = bcrypt.hashpw(password_bytes, salt)
+    return hashed_bytes.decode('utf-8')
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
